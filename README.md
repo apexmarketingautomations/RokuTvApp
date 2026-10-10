@@ -2,7 +2,7 @@
 
 Native BrightScript and SceneGraph application for the Philips H530X Roku TV. This is a separate repository and app from [the Fire TV implementation](https://github.com/apexmarketingautomations/fire-tv-app-). It shares existing Apollo and Railway contracts and the user-authorized Apex branding assets. It does not modify or deploy the Fire TV project.
 
-**Status:** the native source compiles and an installable development ZIP is available. Installation and physical playback verification are pending Developer Mode and account pairing. This is not a verified production release. See [the test record](docs/VERIFICATION.md) and [hardware limitations](docs/HARDWARE.md).
+**Status:** the native source compiles, and build 1.0.00001 is installed and launches on the H530X. Account pairing and physical playback verification remain pending. This is not a verified production release. See [the test record](docs/VERIFICATION.md) and [hardware limitations](docs/HARDWARE.md).
 
 ## Build
 

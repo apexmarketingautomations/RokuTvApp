@@ -58,12 +58,34 @@ class Transport:
     def request(self, port, path, data=None, headers=None, password=None):
         base = "http://" + self.host + ":" + str(port)
         handlers = [urllib.request.ProxyHandler({}), NoRedirect()]
+        request = urllib.request.Request(base + path, data=data, headers=headers or {})
         if password is not None:
             manager = urllib.request.HTTPPasswordMgrWithDefaultRealm()
             manager.add_password(None, base, "rokudev", password)
-            handlers.append(urllib.request.HTTPDigestAuthHandler(manager))
+            digest = urllib.request.HTTPDigestAuthHandler(manager)
+            if data is not None:
+                # Roku rejects the first unauthenticated POST before consuming
+                # a large ZIP, causing a broken pipe before urllib sees its 401.
+                # Obtain a challenge without a body, then authenticate the POST.
+                probe = urllib.request.build_opener(*handlers)
+                challenge = None
+                try:
+                    with probe.open(base + "/", timeout=15):
+                        pass
+                except urllib.error.HTTPError as error:
+                    if error.code != 401:
+                        raise
+                    challenge = error.headers.get("WWW-Authenticate", "")
+                    error.close()
+                if not challenge or not challenge.lower().startswith("digest "):
+                    raise ValueError("Installer did not offer Digest authentication")
+                fields = urllib.request.parse_keqv_list(urllib.request.parse_http_list(challenge[7:]))
+                authorization = digest.get_authorization(request, fields)
+                if not authorization:
+                    raise ValueError("Installer Digest challenge is unsupported")
+                request.add_unredirected_header("Authorization", "Digest " + authorization)
+            handlers.append(digest)
         opener = urllib.request.build_opener(*handlers)
-        request = urllib.request.Request(base + path, data=data, headers=headers or {})
         with opener.open(request, timeout=15) as response:
             payload = response.read(MAX_RESPONSE + 1)
         if len(payload) > MAX_RESPONSE:

@@ -9,7 +9,9 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
 import zipfile
 
@@ -336,6 +338,50 @@ class RokuTests(unittest.TestCase):
         self.assertEqual(result["lines_omitted"], 1)
         self.assertNotIn("private-token", json.dumps(result))
         self.assertEqual([x[1] for x in transport.calls], ["/query/device-info"])
+
+
+class DigestUploadTests(unittest.TestCase):
+    def test_authenticates_before_sending_large_archive(self):
+        received = []
+
+        class Installer(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+
+            def do_GET(self):
+                self.send_response(401)
+                self.send_header("WWW-Authenticate", 'Digest realm="rokudev", nonce="test-nonce", qop="auth"')
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+
+            def do_POST(self):
+                authorization = self.headers.get("Authorization", "")
+                received.append(authorization)
+                if not authorization.startswith("Digest "):
+                    # The physical installer closes without accepting this body.
+                    self.do_GET()
+                    self.close_connection = True
+                    return
+                received.append(self.rfile.read(int(self.headers["Content-Length"])))
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b"Install Success")
+
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Installer)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        archive = b"archive" * 1000000
+        try:
+            result = load_tool("roku").Transport("127.0.0.1").request(
+                server.server_port, "/plugin_install", data=archive, password="test-only")
+            self.assertEqual(result, b"Install Success")
+            self.assertEqual(len(received), 2)
+            self.assertIn('uri="/plugin_install"', received[0])
+            self.assertEqual(received[1], archive)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join()
 
 
 if __name__ == "__main__":

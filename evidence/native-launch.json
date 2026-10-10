@@ -1,0 +1,14 @@
+{
+  "evidence_type": "filtered_runtime_telemetry",
+  "lines_received": 8,
+  "lines_omitted": 7,
+  "records": [
+    {
+      "event": "launch",
+      "model": "H000X",
+      "ui_width": 1280,
+      "ui_height": 720,
+      "build": "1.0.00001"
+    }
+  ]
+}
