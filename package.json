@@ -1,0 +1,12 @@
+{
+  "name": "apex-after-dark-roku",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Native BrightScript and SceneGraph Apex After Dark channel",
+  "scripts": {
+    "check": "bsc --create-package false --copy-to-staging false",
+    "build": "bsc && python3 scripts/package.py",
+    "test": "node scripts/test.mjs"
+  },
+  "devDependencies": {"brighterscript": "0.73.6", "brs": "0.45.0"}
+}

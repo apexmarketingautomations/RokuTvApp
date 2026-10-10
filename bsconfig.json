@@ -1,0 +1,9 @@
+{
+  "rootDir": "src",
+  "files": ["manifest", "source/**/*", "components/**/*", "images/**/*"],
+  "outFile": "dist/apex-after-dark-roku.zip",
+  "stagingDir": "dist/staging",
+  "retainStagingDir": true,
+  "sourceMap": false,
+  "diagnosticLevel": "warn"
+}

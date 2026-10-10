@@ -1,0 +1,13 @@
+title=Apex After Dark
+major_version=1
+minor_version=0
+build_version=00001
+mm_icon_focus_hd=pkg:/images/icon.png
+mm_icon_side_hd=pkg:/images/icon.png
+splash_screen_fhd=pkg:/images/splash.png
+splash_screen_hd=pkg:/images/splash.png
+splash_color=#050814
+splash_min_time=1200
+ui_resolutions=fhd
+supports_input_launch=1
+bs_const=DEBUG=false

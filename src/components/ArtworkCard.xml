@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ArtworkCard" extends="Group">
+  <interface>
+    <field id="itemContent" type="node" onChange="contentChanged" />
+    <field id="focusPercent" type="float" onChange="focusChanged" />
+    <field id="rowFocusPercent" type="float" onChange="focusChanged" />
+    <field id="width" type="float" />
+    <field id="height" type="float" />
+  </interface>
+  <script type="text/brightscript" uri="ArtworkCard.brs" />
+  <children>
+    <Rectangle id="border" width="308" height="226" color="0x36CFEA99" />
+    <Rectangle translation="[3,3]" width="302" height="220" color="0x090F21FF" />
+    <Poster translation="[4,4]" width="300" height="164" uri="pkg:/images/logo.png" loadDisplayMode="scaleToFit" />
+    <Poster id="art" translation="[4,4]" width="300" height="164" loadDisplayMode="scaleToFit" />
+    <Label id="title" translation="[12,174]" width="284" height="44" color="0xEFF9FFFF" font="font:SmallSystemFont" />
+  </children>
+</component>

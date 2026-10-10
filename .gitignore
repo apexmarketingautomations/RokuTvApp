@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.superpowers/
+.private/
+evidence/private/
+*.log
+.DS_Store
+__pycache__/
+*.py[cod]
+.env*
+!.env.example
