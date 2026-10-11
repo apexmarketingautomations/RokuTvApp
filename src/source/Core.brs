@@ -20,6 +20,7 @@ function CoreAA(value as dynamic) as boolean
 end function
 
 function CoreDecode(value as string) as string
+    if instr(1, value, "&") = 0 then return value.trim()
     value = value.replace("&amp;", "&").replace("&quot;", chr(34)).replace("&#39;", "'")
     return value.replace("&lt;", "<").replace("&gt;", ">").trim()
 end function
@@ -55,34 +56,44 @@ end function
 
 function CoreMetadataComma(line as string) as integer
     quote = ""
-    escaped = false
-    for i = 1 to len(line)
-        character = mid(line, i, 1)
-        if character = "\" and not escaped
-            escaped = true
+    cursor = 1
+    ' Skip ordinary attribute text using native searches; preserve the quote
+    ' and escape rules without an interpreted operation for every character.
+    while cursor <= len(line)
+        slash = instr(cursor, line, "\")
+        if quote = ""
+            position = instr(cursor, line, ",")
+            doubleQuote = instr(cursor, line, chr(34))
+            singleQuote = instr(cursor, line, "'")
+            if doubleQuote > 0 and (position = 0 or doubleQuote < position) then position = doubleQuote
+            if singleQuote > 0 and (position = 0 or singleQuote < position) then position = singleQuote
         else
-            if not escaped
-                if character = chr(34) or character = "'"
-                    if quote = character
-                        quote = ""
-                    else if quote = ""
-                        quote = character
-                    end if
-                else if character = "," and quote = ""
-                    return i
-                end if
-            end if
-            escaped = false
+            position = instr(cursor, line, quote)
         end if
-    end for
+        if slash > 0 and (position = 0 or slash < position) then position = slash
+        if position = 0 then return 0
+        character = mid(line, position, 1)
+        if character = "\"
+            cursor = position + 2
+        else
+            if quote = ""
+                if character = "," then return position
+                quote = character
+            else
+                quote = ""
+            end if
+            cursor = position + 1
+        end if
+    end while
     return 0
 end function
 
 function CoreFormat(url as string, hint = "" as string) as string
-    hint = lcase(hint)
+    hint = lcase(hint.split(";")[0].trim())
     if instr(1, hint, "mpegurl") > 0 or hint = "hls" or hint = "m3u8" then return "hls"
     if instr(1, hint, "dash") > 0 then return "dash"
-    if hint = "mp4" or hint = "video/mp4" then return "mp4"
+    if hint = "mp4" or hint = "video/mp4" or hint = "application/mp4" or hint = "video/quicktime" then return "mp4"
+    if hint = "mkv" or hint = "video/x-matroska" or hint = "application/x-matroska" then return "mkv"
     if hint = "mpegts" or hint = "video/mp2t" then return "ts"
     path = lcase(createObject("roRegex", "[?#].*$", "").replace(url, ""))
     if right(path, 5) = ".m3u8" then return "hls"
@@ -270,8 +281,26 @@ function CoreCategories(rows as object) as object
         end if
     end for
     values.sort("i")
-    values.unshift("All")
-    return values
+    years = []
+    other = []
+    yearPattern = createObject("roRegex", "^Movies\s*(\d{4})$", "i")
+    for each category in values
+        matched = yearPattern.match(category)
+        if matched.count() > 1
+            years.push({category:category, year:val(matched[1])})
+        else
+            other.push(category)
+        end if
+    end for
+    years.sortBy("year", "r")
+    ordered = ["All"]
+    for each entry in years
+        ordered.push(entry.category)
+    end for
+    for each category in other
+        ordered.push(category)
+    end for
+    return ordered
 end function
 
 function CoreProgress(item as object, position as float, duration as float, stamp as double) as object

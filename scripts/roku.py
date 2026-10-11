@@ -161,18 +161,22 @@ def sanitize_log(line):
         if not isinstance(value, dict):
             return None
         enums = {
-            "event": {"startup", "navigation", "playback", "guide", "catalog", "request", "error", "hardware", "focus", "shutdown", "memory", "launch", "screen", "play_requested", "player_state", "playback_position", "player_closed"},
+            "event": {"startup", "navigation", "playback", "guide", "catalog", "request", "error", "hardware", "focus", "shutdown", "memory", "launch", "screen", "play_requested", "player_state", "playback_position", "player_closed", "segment_download"},
             "screen": {"home", "movies", "tv", "series", "live", "search", "settings", "detail", "player", "guide", "login", "Home", "Movies", "TV Shows", "Live TV", "Favorites", "Guide", "Search", "Settings"},
             "state": {"idle", "buffering", "playing", "paused", "stopped", "finished", "error", "loading", "ready"},
             "kind": {"movie", "series", "episode", "live", "vod"},
+            "error_category": {"http", "drm", "mediaerror", "mediaplayer"},
             "model": {MODEL, "H000X"},
         }
         result = {}
         for key, options in enums.items():
             if isinstance(value.get(key), str) and value[key] in options:
                 result[key] = value[key]
-        for key in ("position", "duration", "elapsed_ms", "error_code", "request_id", "count", "ui_width", "ui_height"):
+        for key in ("position", "duration", "elapsed_ms", "error_code", "request_id", "count", "ui_width", "ui_height", "status", "sequence", "segment_type", "bitrate", "width", "height", "bytes"):
             if type(value.get(key)) in (int, float) and abs(value[key]) <= 10**15 and math.isfinite(value[key]):
+                result[key] = value[key]
+        for key in ("error_detail_code", "drm_error_code"):
+            if type(value.get(key)) is int and abs(value[key]) <= 10**15:
                 result[key] = value[key]
         if type(value.get("has_more")) is bool:
             result["has_more"] = value["has_more"]

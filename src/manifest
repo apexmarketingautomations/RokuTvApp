@@ -1,7 +1,7 @@
 title=Apex After Dark
 major_version=1
 minor_version=0
-build_version=00001
+build_version=00006
 mm_icon_focus_hd=pkg:/images/icon.png
 mm_icon_side_hd=pkg:/images/icon.png
 splash_screen_fhd=pkg:/images/splash.png

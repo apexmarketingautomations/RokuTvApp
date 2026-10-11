@@ -49,6 +49,8 @@ sub ApiResetMemory()
     m.progress = {}
     m.favorites = {}
     m.metadata = {}
+    m.metadataAttempts = {}
+    m.metadataBrowse = {}
     m.pairSession = invalid
     m.cancelledPairSession = invalid
     m.epg = invalid
@@ -70,9 +72,21 @@ function ApiDispatch(request as object) as object
         if CoreAA(history) then m.progress = history
         if CoreAA(favorites) then m.favorites = favorites
         if CoreAA(saved)
-            result.ok = ApiConnect(saved, false)
-            if not result.ok then result.message = "Saved account could not connect. Check the network or sign in again."
-        else
+            kind = CoreString(saved.kind, "apollo")
+            valid = false
+            if kind = "apollo"
+                valid = CoreString(saved.username).trim() <> "" and CoreString(saved.password) <> ""
+            else if kind = "m3u"
+                valid = CoreString(saved.playlistUrl).trim() <> ""
+            end if
+            if valid
+                ' Saved sign-in survives an unavailable provider. Catalog requests
+                ' retry independently; only explicit signout removes the account.
+                m.credentials = saved
+                m.connected = true
+            end if
+        end if
+        if not m.connected
             result.message = "Connect your Apollo account to browse."
         end if
     else if op = "login"
@@ -395,8 +409,32 @@ sub ApiIndex(rows as object)
     end for
 end sub
 
-function ApiLoadMovies() as boolean
-    if m.movies <> invalid then return true
+sub ApiUnindex(rows as object)
+    for each item in rows
+        m.lookup.delete(item.id)
+        if CoreString(item.kind) = "series"
+            for each episode in item.episodes
+                m.lookup.delete(episode.id)
+            end for
+        end if
+    end for
+end sub
+
+function ApiLoadLive(refresh = false as boolean) as boolean
+    if not refresh and m.live.count() > 0 then return true
+    if m.credentials = invalid then return false
+    response = ApiHttp(ApiPlaylistUrl("livetv"), "GET", {}, "", 15000)
+    if not response.ok then return false
+    rows = CoreParseM3U(response.body, "live")
+    if rows.count() = 0 then return false
+    ApiUnindex(m.live)
+    m.live = rows
+    ApiIndex(rows)
+    return true
+end function
+
+function ApiLoadMovies(refresh = false as boolean) as boolean
+    if not refresh and m.movies <> invalid then return true
     if m.credentials = invalid then return false
     if CoreString(m.credentials.kind) = "m3u"
         m.movies = []
@@ -406,13 +444,15 @@ function ApiLoadMovies() as boolean
     if not response.ok then return false
     rows = CoreParseM3U(response.body, "movie")
     if rows.count() = 0 then return false
+    if m.movies <> invalid then ApiUnindex(m.movies)
     m.movies = rows
+    if CoreAA(m.metadataBrowse.movie) then m.metadataBrowse.movie.delete("preparedCount")
     ApiIndex(rows)
     return true
 end function
 
-function ApiLoadSeriesPage(requestedPage = 0 as integer) as boolean
-    if m.seriesComplete and requestedPage = 0 then return true
+function ApiLoadSeriesPage(requestedPage = 0 as integer, refresh = false as boolean) as boolean
+    if not refresh and m.seriesComplete and requestedPage = 0 then return true
     if m.credentials = invalid then return false
     if CoreString(m.credentials.kind) = "m3u"
         m.seriesComplete = true
@@ -421,7 +461,7 @@ function ApiLoadSeriesPage(requestedPage = 0 as integer) as boolean
     page = requestedPage
     if page = 0 then page = m.seriesPage + 1
     if page < 1 or page > 20 then return false
-    if m.loadedSeriesPages.doesExist(page.toStr()) then return true
+    if not refresh and m.loadedSeriesPages.doesExist(page.toStr()) then return true
     response = ApiHttp(ApiPlaylistUrl("tvshows/" + page.toStr()), "GET", {}, "", 15000)
     if not response.ok
         m.seriesError = "Another TV catalog page could not load. Retry Load more."
@@ -429,9 +469,28 @@ function ApiLoadSeriesPage(requestedPage = 0 as integer) as boolean
     end if
     rows = CoreParseM3U(response.body, "episode")
     if rows.count() = 0
+        if refresh
+            m.seriesError = "TV catalog refresh returned no episodes. Try Refresh again."
+            return false
+        end if
         if page - 1 < m.seriesEndPage then m.seriesEndPage = page - 1
         m.seriesComplete = m.seriesPage >= m.seriesEndPage
         return true
+    end if
+    if refresh
+        ' A successful refresh may expose pages added since the last empty page.
+        m.seriesEndPage = 20
+        m.seriesComplete = false
+        freshIds = {}
+        for each episode in rows
+            freshIds[episode.id] = true
+        end for
+        retained = []
+        for each episode in m.seriesRows
+            if CoreNumber(episode.providerPage) <> page and not freshIds.doesExist(episode.id) then retained.push(episode)
+        end for
+        ApiUnindex(m.series)
+        m.seriesRows = retained
     end if
     known = {}
     for each episode in m.seriesRows
@@ -452,6 +511,7 @@ function ApiLoadSeriesPage(requestedPage = 0 as integer) as boolean
     end while
     m.seriesComplete = m.seriesPage >= m.seriesEndPage
     m.series = CoreBuildSeries(m.seriesRows)
+    if CoreAA(m.metadataBrowse.series) then m.metadataBrowse.series.delete("preparedCount")
     ApiIndex(m.series)
     m.seriesError = ""
     return true
@@ -468,26 +528,38 @@ function ApiCatalog(request as object, result as object) as object
     rows = []
     complete = true
     loadOk = true
+    refresh = request.refresh = true
     if kind = "movie"
-        loadOk = ApiLoadMovies()
+        loadOk = ApiLoadMovies(refresh)
         if m.movies <> invalid then rows = m.movies
     else if kind = "series"
-        if m.seriesPage = 0 or request.loadMore = true then loadOk = ApiLoadSeriesPage()
+        if refresh
+            loadOk = ApiLoadSeriesPage(1, true)
+        else if m.seriesPage = 0 or request.loadMore = true
+            loadOk = ApiLoadSeriesPage()
+        end if
         rows = m.series
         complete = m.seriesComplete
     else if kind = "live"
+        loadOk = ApiLoadLive(refresh)
         rows = m.live
     else if kind = "recent"
         rows = ApiHistory(false)
     else if kind = "continue"
         rows = ApiHistory(true)
     else if kind = "favorites"
+        loadOk = ApiLoadLive(refresh)
         for each item in m.live
             if m.favorites.doesExist(item.id) then rows.push(item)
         end for
     else if kind = "all"
-        loadOk = ApiLoadMovies()
-        if m.seriesPage = 0 or request.loadMore = true then ApiLoadSeriesPage()
+        loadOk = ApiLoadLive(refresh)
+        if not ApiLoadMovies(refresh) then loadOk = false
+        if refresh
+            if not ApiLoadSeriesPage(1, true) then loadOk = false
+        else if m.seriesPage = 0 or request.loadMore = true
+            if not ApiLoadSeriesPage() then loadOk = false
+        end if
         for each item in m.live
             rows.push(item)
         end for
@@ -504,6 +576,10 @@ function ApiCatalog(request as object, result as object) as object
     if not loadOk
         result.ok = false
         result.message = "Provider catalog could not load. Check connection and try again."
+    end if
+    if loadOk and page = 0 and (kind = "movie" or kind = "series")
+        rows = ApiPrepareBrowse(rows, kind)
+        if kind = "movie" then m.movies = rows else m.series = rows
     end if
     paged = CorePage(rows, CoreString(request.category, "All"), CoreString(request.query), page)
     if kind = "movie" or kind = "series" then ApiEnrich(paged.items, kind)
@@ -528,12 +604,15 @@ function ApiCatalog(request as object, result as object) as object
     if kind = "series" or kind = "all"
         result.scope = "TV provider pages loaded: " + m.loadedSeriesPages.count().toStr() + " of up to 20"
         if not complete then result.scope += ". More shows and episodes may be available."
+        if refresh
+            if loadOk then result.scope += ". Refreshed provider TV page 1; other loaded pages retained." else result.scope += ". Refresh requested provider TV page 1; cached titles remain available."
+        end if
     end if
     return result
 end function
 
 function ApiEpisodes(request as object, result as object) as object
-    if request.loadMore = true then ApiLoadSeriesPage()
+    if request.loadMore = true and request.refresh <> true then ApiLoadSeriesPage()
     show = m.lookup[CoreString(request.seriesId)]
     if not CoreAA(show)
         result.ok = false
@@ -544,6 +623,26 @@ function ApiEpisodes(request as object, result as object) as object
         result.ok = false
         result.message = "Select a TV series to browse its episodes."
         return result
+    end if
+    refreshPage = 0
+    if request.refresh = true
+        refreshPage = 21
+        for each episode in show.episodes
+            providerPage = int(CoreNumber(episode.providerPage))
+            if providerPage > 0 and providerPage < refreshPage then refreshPage = providerPage
+        end for
+        if refreshPage = 21 then refreshPage = 1
+        if not ApiLoadSeriesPage(refreshPage, true)
+            result.ok = false
+            result.message = "Provider catalog could not refresh. Cached episodes remain available; try Refresh again."
+        else
+            show = m.lookup[CoreString(request.seriesId)]
+            if not CoreAA(show)
+                result.ok = false
+                result.message = "This series is no longer in the refreshed provider catalog."
+                return result
+            end if
+        end if
     end if
     rows = []
     seasons = []
@@ -559,7 +658,7 @@ function ApiEpisodes(request as object, result as object) as object
         if request.season <> invalid then include = season = CoreNumber(request.season)
         if include then rows.push(item)
     end for
-    paged = CorePage(rows, "All", "", int(CoreNumber(request.page)))
+    paged = CorePage(rows, "All", CoreString(request.query), int(CoreNumber(request.page)))
     for each item in paged.items
         if CoreString(item.artwork) = "" then item.artwork = CoreString(show.artwork)
         ApiDecorate(item)
@@ -572,6 +671,9 @@ function ApiEpisodes(request as object, result as object) as object
     result.canLoadMore = not m.seriesComplete
     result.scope = "Episodes from " + m.loadedSeriesPages.count().toStr() + " loaded provider TV pages."
     if not m.seriesComplete then result.scope += " Load more to check for other seasons."
+    if refreshPage > 0
+        if result.ok then result.scope += " Refreshed provider TV page " + refreshPage.toStr() + "; other loaded pages retained." else result.scope += " Refresh requested provider TV page " + refreshPage.toStr() + "; cached episodes remain available."
+    end if
     return result
 end function
 
@@ -601,6 +703,9 @@ function ApiHistory(unfinished as boolean) as object
         end if
         if CoreAA(item) and include
             copy = CorePublicItem(item)
+            if CoreString(copy.id) = CoreString(record.id) and CoreString(copy.artwork) = "" and CoreAA(record.snapshot)
+                copy.artwork = CoreSafeArtwork(record.snapshot.artwork)
+            end if
             ApiDecorate(copy)
             items.push(copy)
             if items.count() >= 30 then exit for
@@ -656,6 +761,123 @@ function ApiMetadataAuth() as boolean
     return true
 end function
 
+function ApiMetadataArtwork(record as dynamic) as string
+    if not CoreAA(record) then return ""
+    if not CoreAA(record.meta) then return ""
+    artwork = CoreSafeArtwork(record.meta.fanart)
+    if artwork = "" then artwork = CoreSafeArtwork(record.meta.poster)
+    if artwork = "" then artwork = CoreSafeArtwork(record.meta.banner)
+    return artwork
+end function
+
+function ApiPrepareBrowse(rows as object, kind as string) as object
+    if rows.count() = 0 then return rows
+    state = m.metadataBrowse[kind]
+    if not CoreAA(state)
+        state = {attempts:0, complete:false, records:[]}
+        m.metadataBrowse[kind] = state
+    end if
+    preserveOrder = CoreNumber(state.preparedCount, -1) = rows.count()
+    if preserveOrder and (state.complete or state.attempts >= 2)
+        ApiApplyMetadata(rows, kind)
+        return rows
+    end if
+    targets = {}
+    for each item in rows
+        imdbId = CoreString(item.imdbId)
+        if createObject("roRegex", "^tt\d+$", "").isMatch(imdbId)
+            if not targets.doesExist(imdbId) then targets[imdbId] = []
+            targets[imdbId].push(item)
+        end if
+    end for
+    if targets.count() = 0 then return rows
+    if not state.complete and state.attempts < 2
+        state.attempts += 1
+        if ApiMetadataAuth()
+            headers = {Accept:"application/json", Authorization:m.auth.authorization, "X-API-PROFILE":m.auth.profile, "User-Agent":"okhttp/4.9.3", "X-APP-VERSION":"2.6.1"}
+            path = "info/movie"
+            if kind = "series" then path = "info/tvshow"
+            response = ApiHttp("https://dev.testbyte.top/api/" + path + "/categories", "GET", headers, "", 3000)
+            if response.code = 401 or response.code = 403 then m.auth = invalid
+            payload = ApiJson(response)
+            if type(payload.data) = "roArray"
+                collections = []
+                genres = []
+                for each category in payload.data
+                    if CoreAA(category)
+                        categoryId = CoreNumber(category.id, -1)
+                        if categoryId >= 0 and categoryId <= 2147483647 and categoryId = int(categoryId) and category.has_accessible_infos <> false
+                            if category.is_genre = true then genres.push(categoryId) else collections.push(categoryId)
+                        end if
+                    end if
+                end for
+                selected = []
+                if collections.count() > 0 then selected.push(collections.shift())
+                if genres.count() > 0 then selected.push(genres.shift())
+                if selected.count() < 2 and collections.count() > 0 then selected.push(collections.shift())
+                if selected.count() < 2 and genres.count() > 0 then selected.push(genres.shift())
+                state.complete = true
+                illustrated = {}
+                if kind = "series" then headers["X-API-Version"] = "V3"
+                ' Keep initial browse enrichment bounded: at most two category pages.
+                for each categoryId in selected
+                    response = ApiHttp("https://dev.testbyte.top/api/" + path + "/items/" + categoryId.toStr() + "/0/250?use_lang_limits=0", "GET", headers, "", 3000)
+                    if response.code = 401 or response.code = 403 then m.auth = invalid
+                    payload = ApiJson(response)
+                    records = invalid
+                    if CoreAA(payload.data) then records = payload.data.infos
+                    if type(records) = "roArray"
+                        for each record in records
+                            if CoreAA(record)
+                                imdbId = CoreString(record.imdb_id)
+                                if imdbId = "" and CoreAA(record.meta) then imdbId = CoreString(record.meta.imdb_id)
+                                if createObject("roRegex", "^tt\d+$", "").isMatch(imdbId)
+                                    state.records.push(record)
+                                    if targets.doesExist(imdbId) and ApiMetadataArtwork(record) <> "" then illustrated[imdbId] = true
+                                end if
+                            end if
+                        end for
+                    else
+                        state.complete = false
+                    end if
+                    if illustrated.count() >= 30 or m.auth = invalid then exit for
+                end for
+            end if
+        end if
+    end if
+    ordered = []
+    emitted = {}
+    for each record in state.records
+        imdbId = CoreString(record.imdb_id)
+        if imdbId = "" and CoreAA(record.meta) then imdbId = CoreString(record.meta.imdb_id)
+        if targets.doesExist(imdbId)
+            key = kind + ":" + imdbId
+            if ApiMetadataArtwork(m.metadata[key]) = "" then m.metadata[key] = record
+            if ApiMetadataArtwork(m.metadata[key]) <> ""
+                for each item in targets[imdbId]
+                    if not emitted.doesExist(item.id)
+                        ordered.push(item)
+                        emitted[item.id] = true
+                    end if
+                end for
+            end if
+        end if
+    end for
+    ApiApplyMetadata(rows, kind)
+    if preserveOrder then return rows
+    state.preparedCount = rows.count()
+    for each item in rows
+        if not emitted.doesExist(item.id) and CoreSafeArtwork(item.artwork) <> ""
+            ordered.push(item)
+            emitted[item.id] = true
+        end if
+    end for
+    for each item in rows
+        if not emitted.doesExist(item.id) then ordered.push(item)
+    end for
+    return ordered
+end function
+
 sub ApiEnrich(items as object, kind as string)
     missing = []
     target = {}
@@ -663,7 +885,9 @@ sub ApiEnrich(items as object, kind as string)
         imdbId = CoreString(item.imdbId)
         if createObject("roRegex", "^tt\d+$", "").isMatch(imdbId)
             key = kind + ":" + imdbId
-            if not m.metadata.doesExist(key) then missing.push(imdbId)
+            if not target.doesExist(imdbId)
+                if ApiMetadataArtwork(m.metadata[key]) = "" and CoreNumber(m.metadataAttempts[key]) < 2 then missing.push(imdbId)
+            end if
             target[imdbId] = item
         end if
     end for
@@ -686,6 +910,10 @@ sub ApiEnrich(items as object, kind as string)
             if unauthorized then m.auth = invalid
             payload = ApiJson(response)
             if type(payload.data) = "roArray"
+                for each imdbId in missing
+                    key = kind + ":" + imdbId
+                    m.metadataAttempts[key] = CoreNumber(m.metadataAttempts[key]) + 1
+                end for
                 for each record in payload.data
                     if CoreAA(record)
                         imdbId = CoreString(record.imdb_id)
@@ -699,6 +927,10 @@ sub ApiEnrich(items as object, kind as string)
             if not unauthorized then exit for
         end for
     end if
+    ApiApplyMetadata(items, kind)
+end sub
+
+sub ApiApplyMetadata(items as object, kind as string)
     for each item in items
         record = m.metadata[kind + ":" + CoreString(item.imdbId)]
         if CoreAA(record)
@@ -706,9 +938,7 @@ sub ApiEnrich(items as object, kind as string)
             if CoreAA(record.meta)
                 if CoreString(record.title) = "" and CoreString(record.meta.title) <> "" then item.title = record.meta.title
                 item.description = CoreString(record.meta.plot, CoreString(item.description))
-                artwork = CoreSafeArtwork(record.meta.fanart)
-                if artwork = "" then artwork = CoreSafeArtwork(record.meta.poster)
-                if artwork = "" then artwork = CoreSafeArtwork(record.meta.banner)
+                artwork = ApiMetadataArtwork(record)
                 if artwork <> "" then item.artwork = artwork
             end if
             cached = m.lookup[item.id]
@@ -733,13 +963,23 @@ function ApiResolve(request as object, result as object) as object
         kind = CoreString(item.kind)
         if kind = "movie"
             ApiLoadMovies()
+        else if kind = "live"
+            ApiLoadLive()
         else if kind = "episode"
             providerPage = int(CoreNumber(item.providerPage))
             if providerPage > 0 and providerPage <= 20 then ApiLoadSeriesPage(providerPage)
         end if
         cached = m.lookup[CoreString(item.id)]
     end if
-    if CoreAA(cached) then item = CorePublicItem(cached)
+    if not CoreAA(cached)
+        result.ok = false
+        result.message = "This title could not be matched to the current provider catalog. Browse the library and select it again."
+        return result
+    end if
+    item = CorePublicItem(cached)
+    if CoreString(item.id) = CoreString(request.item.id) and CoreString(item.artwork) = ""
+        item.artwork = CoreSafeArtwork(request.item.artwork)
+    end if
     if CoreString(item.url) = ""
         result.ok = false
         result.message = "This watched title could not be matched to the current provider catalog. Browse the library and select it again."
@@ -755,10 +995,7 @@ function ApiResolve(request as object, result as object) as object
             for each key in response.headers
                 if lcase(key) = "content-type" then contentType = lcase(CoreString(response.headers[key]))
             end for
-            if instr(1, contentType, "mpegurl") > 0 then format = "hls"
-            if instr(1, contentType, "video/mp4") > 0 then format = "mp4"
-            if instr(1, contentType, "dash+xml") > 0 then format = "dash"
-            if instr(1, contentType, "video/mp2t") > 0 then format = "ts"
+            format = CoreFormat("", contentType)
         end if
     end if
     if format = "" or format = "ts"

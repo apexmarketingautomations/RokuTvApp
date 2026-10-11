@@ -50,6 +50,31 @@ sub Main()
     Check(third.items.count() = 10, "last page has remainder")
     Check(not third.hasMore, "last page terminates pagination")
     Check(CorePage(rows, "Comedy", "", 0).items.count() = 0, "category filter is applied")
+    categoryRows = [
+        {id:"oldest",kind:"movie",title:"Oldest",category:"Movies 1915"}
+        {id:"old",kind:"movie",title:"Old",category:"Movies 1920"}
+        {id:"new",kind:"movie",title:"New",category:"Movies 2026"}
+        {id:"last",kind:"movie",title:"Last year",category:"Movies2025"}
+        {id:"drama",kind:"movie",title:"Drama",category:"Drama"}
+        {id:"action",kind:"movie",title:"Action",category:"Action"}
+        {id:"collection",kind:"movie",title:"Collection",category:"Movies 2020 Classics"}
+        {id:"news",kind:"live",title:"News",category:"News 2026"}
+        {id:"new2",kind:"movie",title:"New again",category:"Movies 2026"}
+    ]
+    categories = CoreCategories(categoryRows)
+    Check(categories.join("|") = "All|Movies 2026|Movies2025|Movies 1920|Movies 1915|Action|Drama|Movies 2020 Classics|News 2026", "real movie years are newest first, All stays first and other groups remain alphabetized")
+    for each category in categories
+        if category <> "All"
+            filtered = CorePage(categoryRows, category, "", 0)
+            Check(filtered.total > 0, "every category option retains a real filter value")
+            for each filteredItem in filtered.items
+                Check(filteredItem.category = category, "category ordering does not broaden or rename exact filters")
+            end for
+        end if
+    end for
+    Check(CorePage(categoryRows, categories[1], "", 0).total = 2, "first year choice reaches the newest movies and excludes older years")
+    categoryRows.reverse()
+    Check(CoreCategories(categoryRows).join("|") = categories.join("|"), "category ordering is independent of provider item order")
     item = {id:"movie42", kind:"movie", url:"https://example.test/secret", headers:{Authorization:"Bearer secret"}, title:"Secret must not persist"}
     progress = CoreProgress(item, 120, 1000, 1234)
     Check(progress.position = 120, "resume position retained")

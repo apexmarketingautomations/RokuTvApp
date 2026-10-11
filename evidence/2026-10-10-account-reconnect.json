@@ -1,0 +1,49 @@
+{
+  "logs": {
+    "evidence_type": "filtered_runtime_telemetry",
+    "lines_received": 42,
+    "lines_omitted": 38,
+    "records": [
+      {
+        "event": "launch",
+        "model": "H000X",
+        "ui_width": 1280,
+        "ui_height": 720,
+        "build": "1.0.00001"
+      },
+      {
+        "event": "screen",
+        "screen": "Home"
+      },
+      {
+        "event": "launch",
+        "model": "H000X",
+        "ui_width": 1280,
+        "ui_height": 720,
+        "build": "1.0.00001"
+      },
+      {
+        "event": "screen",
+        "screen": "Home"
+      }
+    ]
+  },
+  "labels": [
+    {
+      "name": "heading",
+      "text": "Home"
+    },
+    {
+      "name": "status",
+      "text": "Provider catalog could not load. Check connection and try again."
+    },
+    {
+      "name": "featureTitle",
+      "text": "Your night starts here"
+    }
+  ],
+  "dialogs": [
+    "Dialog",
+    "Dialog"
+  ]
+}

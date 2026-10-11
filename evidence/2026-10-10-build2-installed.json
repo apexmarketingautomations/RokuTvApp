@@ -1,0 +1,63 @@
+{
+  "evidence_type": "installation_result_with_local_package_verification",
+  "date": "2026-10-10",
+  "build": "1.0.00002",
+  "deviceModel": "H530X",
+  "installation": {
+    "success": true,
+    "method": "Roku developer installer with Digest authentication",
+    "source": "successful installer result reported by the parent task"
+  },
+  "package": {
+    "path": "dist/apex-after-dark-roku.zip",
+    "bytes": 5607227,
+    "runtimeFiles": 15,
+    "sha256": "fe3ede6b7bb04a764019e2bd998525991b59b0278e1818ee3dde13064ebbe250",
+    "localArchiveAndSidecarVerified": true
+  },
+  "automatedVerification": {
+    "test": "passed: core suite, 9 navigation assertions, 11 scene assertions, 26 Python tests",
+    "check": "passed",
+    "build": "passed"
+  },
+  "newBuildArtworkVerified": false,
+  "physicalPlaybackVerified": false,
+  "historicalEvidence": [
+    "2026-10-10-account-setup.json",
+    "2026-10-10-account-reconnect.json"
+  ],
+  "providerDiagnostics": "2026-10-10-provider-diagnostics.json",
+  "currentTvContext": "User canceled AirPlay; subsequent Apex launch reached Home, then user returned to HDMI before catalog completion",
+  "credentialsInEvidence": false,
+  "limitation": "Installation, automated checks and immediate saved-account restoration do not resolve reported artwork/playback failures or verify repeated-exit persistence; physical verification remains incomplete.",
+  "newBuildLaunched": true,
+  "preliminaryRuntimeObservation": {
+    "source": "parent task inspected clean-start.json and runtime samples",
+    "activeAppVersion": "1.0.2",
+    "screenAtLaunch": "Home",
+    "loginPromptShown": false,
+    "catalog": "user left before completion",
+    "exitReason": "EXIT_USER_NAV",
+    "filteredCrashObserved": false,
+    "lastRecordedTvState": "HDMI",
+    "verificationComplete": false
+  },
+  "newBuildRuntimeChecksComplete": false,
+  "newBuildLaunchVerified": true,
+  "newBuildSavedLoginRestoredAtLaunch": true,
+  "newBuildRepeatedExitPersistenceVerified": false,
+  "runtimeSamples": {
+    "elapsedSeconds": [
+      8,
+      16,
+      24
+    ],
+    "approximateMemoryMB": [
+      38,
+      45,
+      51
+    ],
+    "sampledCpuPercent": 24.8,
+    "limitation": "Approximate samples reported by the parent task; do not establish a memory crash or completed catalog load."
+  }
+}

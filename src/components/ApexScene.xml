@@ -18,7 +18,7 @@
       <Group id="feature" translation="[430,220]">
         <Rectangle width="1358" height="364" color="0x39D9EACC" />
         <Rectangle translation="[3,3]" width="1352" height="358" color="0x090F21FF" />
-        <Poster id="featureArt" translation="[758,4]" width="594" height="354" uri="pkg:/images/logo.png" loadDisplayMode="scaleToFit" />
+        <Poster id="featureArt" translation="[758,4]" width="594" height="354" loadWidth="594" loadHeight="354" loadDisplayMode="scaleToFit" failedBitmapUri="pkg:/images/logo.png" uri="pkg:/images/logo.png" />
         <Label id="featureEyebrow" translation="[32,25]" width="700" height="38" text="APEX AFTER DARK" font="font:SmallSystemFont" color="0x78E9F1FF" />
         <Label id="featureTitle" translation="[32,76]" width="700" height="92" text="Your night starts here" wrap="true" maxLines="2" font="font:LargeBoldSystemFont" />
         <Label id="featureDescription" translation="[32,180]" width="690" height="96" text="Connect your Apollo account to browse your real library." wrap="true" maxLines="3" font="font:SmallSystemFont" color="0xC6D6E8FF" />
@@ -27,7 +27,7 @@
       <RowList id="rows" translation="[430,635]" itemComponentName="ArtworkCard" itemSize="[1340,285]" numRows="1" rowItemSize="[[308,226]]" rowItemSpacing="[[24,0]]" rowLabelOffset="[[0,12]]" showRowLabel="[true]" showRowCounter="[true]" rowFocusAnimationStyle="floatingFocus" vertFocusAnimationStyle="fixedFocus" drawFocusFeedback="false" />
       <LabelList id="actions" translation="[470,262]" itemSize="[1250,76]" numRows="8" visible="false" focusBitmapUri="" focusedColor="0x75F4FFFF" />
       <Label id="footer" translation="[430,953]" width="1350" height="48" text="OK Details    * Options    Back Return" color="0x9DB4CEFF" font="font:SmallSystemFont" />
-      <Label translation="[115,935]" width="220" height="42" text="ROKU 1.0.00001" color="0xB18DDEFF" font="font:SmallSystemFont" />
+      <Label translation="[115,935]" width="220" height="42" text="ROKU 1.0.6" color="0xB18DDEFF" font="font:SmallSystemFont" />
     </Group>
     <Video id="video" width="1920" height="1080" visible="false" notificationInterval="5" />
     <Label id="notice" translation="[430,84]" width="1300" height="90" wrap="true" maxLines="2" color="0xFFFFFFFF" font="font:MediumBoldSystemFont" visible="false" />

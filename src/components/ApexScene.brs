@@ -33,6 +33,7 @@ sub init()
     m.actions.observeField("itemSelected", "onActionSelected")
     m.video.observeField("state", "onVideoState")
     m.video.observeField("position", "onVideoPosition")
+    m.video.observeField("downloadedSegment", "onDownloadedSegment")
     m.startupTimer.observeField("fire", "onStartupTimeout")
     m.pairTimer.observeField("fire", "onPairTimer")
     m.saveTimer.observeField("fire", "savePlayback")
@@ -44,7 +45,7 @@ sub init()
     info = CreateObject("roDeviceInfo")
     ui = info.GetUIResolution()
     m.deviceSummary = info.GetModel() + " / UI " + ui.width.toStr() + " x " + ui.height.toStr()
-    telemetry({event: "launch", build: "1.0.00001", model: info.GetModel(), ui_width: ui.width, ui_height: ui.height})
+    telemetry({event: "launch", build: "1.0.00006", model: info.GetModel(), ui_width: ui.width, ui_height: ui.height})
 end sub
 
 function makeList(names as object) as object
@@ -72,7 +73,7 @@ sub sendRequest(req as object, foreground = true as boolean)
             retry.delete(secret)
         end for
         m.lastRequest = retry
-        m.status.text = "Loading your library..."
+        if req.op <> "resolve" then m.status.text = "Loading your library..."
     end if
     m.api.request = req
 end sub
@@ -149,9 +150,19 @@ sub onApiResponse()
         m.complete = r.complete
         if r.categories <> invalid then m.categories = r.categories
         if r.seasons <> invalid then m.seasons = r.seasons
-        m.status.text = r.scope
-        if m.status.text = "" then m.status.text = r.message
-        m.status.text += "  • Page " + (m.page + 1).toStr() + " • " + r.total.toStr() + " loaded matches"
+        m.status.text = r.total.toStr() + " results • Page " + (m.page + 1).toStr()
+        scope = ""
+        if type(r.scope) = "String" or type(r.scope) = "roString" then
+            scope = r.scope.split(".")[0]
+            if instr(1, scope, "TV provider pages loaded: ") = 1 then
+                scope = scope.replace("TV provider pages loaded: ", "TV pages ").replace(" of up to ", "/")
+            else if instr(1, scope, "Episodes from ") = 1 then
+                scope = scope.replace("Episodes from ", "TV pages ").replace(" loaded provider TV pages", "")
+            else
+                scope = ""
+            end if
+        end if
+        if scope <> "" then m.status.text += " • " + scope
         m.displayRows = []
         if m.screen = "Home" then
             if r.continue <> invalid then appendRow("Continue Watching", r.continue)
@@ -227,7 +238,7 @@ sub updateFeature(item as object)
     else if m.screen = "Guide" then
         m.featureHint.text = "OK  View channel guide"
     else
-        m.featureHint.text = "OK  Details & Play    ▶  Play now"
+        m.featureHint.text = "OK  Details    Play button  Watch now"
     end if
 end sub
 
@@ -239,6 +250,13 @@ end sub
 sub rememberScreen()
     if m.screen = "Settings" then return
     state = {screen: m.screen, kind: m.kind, category: m.category, query: m.query, page: m.page, focus: m.rows.rowItemFocused}
+    if m.stack.count() > 0 then
+        parent = m.stack[0]
+        state.category = parent.category
+        state.query = parent.query
+        state.page = parent.page
+        state.focus = parent.focus
+    end if
     m.savedScreens[m.screen] = state
 end sub
 
@@ -246,6 +264,17 @@ sub showScreen(name as string, preserve as boolean)
     invalidateRequest()
     m.notice.visible = false
     if preserve then rememberScreen()
+    if name <> m.screen or (m.seriesId <> invalid and m.seriesId <> "") or m.stack.count() > 0 then
+        m.items = []
+        m.displayRows = []
+        m.rows.content = invalid
+        m.selected = invalid
+        m.hasMore = false
+        m.categories = ["All"]
+        m.seasons = []
+        m.featureArt.uri = "pkg:/images/logo.png"
+        m.restoreFocus = invalid
+    end if
     m.stack = []
     m.seriesId = ""
     m.season = invalid
@@ -294,12 +323,17 @@ sub showSettings()
     m.footer.text = "Left Navigation    OK Select    Back Home"
 end sub
 
-sub loadCatalog(loadMore = false as boolean)
+sub loadCatalog(loadMore = false as boolean, refresh = false as boolean)
+    if m.connected and m.displayRows.count() = 0 then
+        m.featureTitle.text = "Loading your library"
+        m.featureDescription.text = "Your account is saved. Getting your movies, shows and channels ready."
+        m.featureHint.text = "You can browse when the library is ready"
+    end if
     if m.seriesId <> invalid and m.seriesId <> "" then
-        req = {op: "episodes", seriesId: m.seriesId, page: m.page, loadMore: loadMore}
+        req = {op: "episodes", seriesId: m.seriesId, query: m.query, page: m.page, loadMore: loadMore, refresh: refresh}
         if m.season <> invalid then req.season = m.season
     else
-        req = {op: "catalog", kind: m.kind, category: m.category, query: m.query, page: m.page, loadMore: loadMore}
+        req = {op: "catalog", kind: m.kind, category: m.category, query: m.query, page: m.page, loadMore: loadMore, refresh: refresh}
     end if
     sendRequest(req)
     m.footer.text = "OK Details    * Options / categories    Replay Previous page    FF Next page"
@@ -316,6 +350,7 @@ sub focusContent()
 end sub
 
 function focusedItem() as dynamic
+    if m.loading then return invalid
     rowPosition = m.rows.rowItemFocused
     if rowPosition = invalid then return invalid
     if rowPosition.count() < 2 then return invalid
@@ -337,11 +372,13 @@ sub onItemSelected()
     if item = invalid then return
     m.selected = item
     if item.kind = "series" then
-        m.stack.push({title: m.heading.text, seriesId: m.seriesId, season: m.season, page: m.page, category: m.category, focus: m.rows.rowItemFocused})
+        m.stack.push({title: m.heading.text, seriesId: m.seriesId, season: m.season, page: m.page, category: m.category, query: m.query, focus: m.rows.rowItemFocused})
         m.seriesId = item.id
         m.season = invalid
+        m.query = ""
         m.pickSeasonAfterLoad = true
         m.page = 0
+        m.restoreFocus = [0,0]
         m.heading.text = item.title
         m.focusAfterLoad = true
         loadCatalog()
@@ -350,14 +387,21 @@ sub onItemSelected()
     else
         buttons = ["Play", "Back"]
         if item.kind = "live" then buttons = ["Watch live", "Toggle favorite", "Channel guide", "Back"]
-        description = item.description
-        if description = "" then description = "Details are not provided for this title."
+        description = detailMessage(item)
         if item.resumePosition <> invalid then
             if item.resumePosition > 15 then buttons[0] = "Resume playback"
         end if
         showDialog(item.title, description, buttons, "details")
     end if
 end sub
+
+function detailMessage(item as object) as string
+    description = item.description
+    if type(description) <> "String" and type(description) <> "roString" then description = ""
+    description = description.trim()
+    if description = "" then return "Details are not provided for this title."
+    return description
+end function
 
 sub onActionSelected()
     index = m.actions.itemSelected
@@ -374,7 +418,7 @@ sub onActionSelected()
     else if index = 5 then
         showDialog("Request unavailable", "This is a local recovery test. No provider request was made. Back and the buttons below remain usable.", ["Return Home", "Back"], "recoveryTest")
     else if index = 6 then
-        showDialog("Apex After Dark", "Native Roku build 1.0.00001" + chr(10) + "BrightScript + SceneGraph. Real Apollo catalogs. Stored sign-in is encrypted by Roku and scoped to the developer ID. Removing the app or changing its signing identity may remove saved data.", ["Back"], "info")
+        showDialog("Apex After Dark", "Native Roku build 1.0.00006" + chr(10) + "BrightScript + SceneGraph. Real Apollo catalogs. Stored sign-in is encrypted by Roku and scoped to the developer ID. Removing the app or changing its signing identity may remove saved data.", ["Back"], "info")
     end if
 end sub
 
@@ -520,8 +564,15 @@ sub onDialogButton()
     end if
 end sub
 
+function refreshOptionLabel() as string
+    if m.seriesId <> invalid and m.seriesId <> "" then return "Refresh this show's first TV page"
+    if m.kind = "series" then return "Refresh first TV page"
+    if m.kind = "all" then return "Refresh movies/live and first TV page"
+    return "Refresh"
+end function
+
 sub showOptions()
-    m.optionNames = ["Categories", "Search this library", "Next page", "Previous page", "Load more provider catalog", "Refresh", "Back"]
+    m.optionNames = ["Categories", "Search this library", "Next page", "Previous page", "Load more provider catalog", refreshOptionLabel(), "Back"]
     if m.seriesId <> invalid and m.seriesId <> "" then m.optionNames[0] = "Seasons"
     showDialog("Browse options", "Search covers the loaded catalog. Load more provider pages to expand TV results.", m.optionNames, "options")
 end sub
@@ -547,7 +598,7 @@ sub handleOption(index as integer)
     else if index = 5 then
         m.page = 0
         m.focusAfterLoad = true
-        loadCatalog()
+        loadCatalog(false, true)
     else
         focusContent()
     end if
@@ -583,6 +634,7 @@ sub handleChoice(index as integer)
     else if index < m.choiceCount then
         if m.choiceKind = "season" then
             m.season = m.seasons[m.choiceOffset + index]
+            m.restoreFocus = [0,0]
         else
             m.category = m.choices[m.choiceOffset + index]
         end if
@@ -694,7 +746,18 @@ end sub
 
 sub onVideoState()
     state = m.video.state
-    telemetry({event: "player_state", state: state, error_code: m.video.errorCode})
+    diagnostics = {event: "player_state", state: state, error_code: m.video.errorCode}
+    info = m.video.errorInfo
+    if state = "error" and type(info) = "roAssociativeArray" then
+        if type(info.category) = "String" or type(info.category) = "roString" then
+            for each category in ["http", "drm", "mediaerror", "mediaplayer"]
+                if info.category = category then diagnostics.error_category = category
+            end for
+        end if
+        if type(info.errcode) = "Integer" or type(info.errcode) = "roInt" then diagnostics.error_detail_code = info.errcode
+        if type(info.drmerrcode) = "Integer" or type(info.drmerrcode) = "roInt" then diagnostics.drm_error_code = info.drmerrcode
+    end if
+    telemetry(diagnostics)
     if not m.playing then return
     if state = "playing" then
         m.playbackStarted = true
@@ -727,6 +790,21 @@ sub onVideoPosition()
     telemetry({event: "playback_position", kind: m.playItem.kind, position: m.video.position, duration: m.video.duration})
 end sub
 
+sub onDownloadedSegment()
+    segment = m.video.downloadedSegment
+    if type(segment) <> "roAssociativeArray" then return
+    data = {event:"segment_download"}
+    mapping = {Status:"status", SegSequence:"sequence", SegStart:"position", SegType:"segment_type", BitrateBPS:"bitrate", Width:"width", Height:"height", SegSize:"bytes", DownloadDuration:"elapsed_ms"}
+    for each field in mapping
+        value = segment[field]
+        kind = type(value)
+        if kind = "Integer" or kind = "roInt" or kind = "Float" or kind = "roFloat" or kind = "Double" or kind = "roDouble" or kind = "LongInteger" then
+            data[mapping[field]] = value
+        end if
+    end for
+    telemetry(data)
+end sub
+
 sub savePlayback()
     if not m.playing then return
     if not m.playbackStarted then return
@@ -755,8 +833,12 @@ sub onStartupTimeout()
 end sub
 
 sub returnBack()
-    invalidateRequest()
     action = NavBack(m.top.dialog <> invalid, m.playing, m.stack.count(), m.screen)
+    keepCatalog = false
+    if action = "dialog" and m.lastRequest <> invalid and m.dialogKind <> "pair" then
+        keepCatalog = m.lastRequest.op = "catalog" or m.lastRequest.op = "episodes"
+    end if
+    if not keepCatalog then invalidateRequest()
     if action = "dialog" then
         if m.dialogKind = "pair" then
             cancelPair()
@@ -773,6 +855,7 @@ sub returnBack()
         m.season = state.season
         m.page = state.page
         m.category = state.category
+        m.query = state.query
         m.restoreFocus = state.focus
         m.focusAfterLoad = true
         loadCatalog()
@@ -815,6 +898,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return false
     end if
     if m.top.dialog <> invalid then return false
+    if m.screen = "Settings" and (key = "play" or key = "fastforward" or key = "rewind" or key = "replay") then return false
     if key = "left" then
         m.nav.setFocus(true)
         return true

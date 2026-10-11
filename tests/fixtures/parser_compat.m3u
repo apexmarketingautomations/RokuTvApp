@@ -1,0 +1,27 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="tt10000001" tvg-name="Sample Provider Movie (2026)" group-title="Recent Added",Sample Provider Movie (2026)
+https://stream.example.test/account/fixture-password/100001
+#EXTINF:-1 TVG-ID='tt10000002' TVG-NAME='Planes, Trains' GROUP-TITLE='Comedy, Classics',Planes, Trains and Automobiles
+https://stream.example.test/second.mp4
+#EXTINF:-1 tvg-id="tt10000003" tvg-name="L'été &amp; Café" group-title="Foreign &amp; Drama", L'été &amp; Café ☕
+https://stream.example.test/third.mkv
+#EXTINF:-1 tvg-id=tt10000004 tvg-name=Plain group-title=Drama,Plain title
+https://stream.example.test/fourth.m3u8
+#EXTINF:-1 tvg-id="tt10000005" tvg-name="A 'quoted, title'" group-title="Drama",Quoted display title
+https://stream.example.test/fifth.mp4
+#EXTINF:-1 tvg-id="tt10000006" group-title="" group-title="Updated" tvg-logo="//images.example.test/poster.jpg",Series S01E02 Arrival
+https://stream.example.test/sixth
+#EXTINF:-1 tvg-id="tt10000006" group-title="" group-title="Updated" tvg-logo="//images.example.test/poster.jpg",Series S01E03 Departure
+https://stream.example.test/seventh
+#EXTINF:-1 tvg-name="Same" group-title="Drama",Same
+https://stream.example.test/eighth.mp4
+#EXTINF:-1 tvg-name="Same" group-title="Drama",Same
+https://stream.example.test/ninth.mp4
+#EXTINF:-1,Untitled metadata fallback
+https://stream.example.test/tenth
+#EXTINF:-1 tvg-id="tt10000011" tvg-name="Apostrophe's title" tvg-logo="/poster.jpg", Apostrophe's title
+#EXTGRP:Drama
+#EXTVLCOPT:http-user-agent=Fixture Player
+https://stream.example.test/eleventh.mp4
+#EXTINF:-1 tvg-id="tt10000012" tvg-name="&#39;Entity&#39; Title &lt;all&gt;" group-title="Drama",&#39;Entity&#39; Title &lt;all&gt;
+https://stream.example.test/twelfth.mp4

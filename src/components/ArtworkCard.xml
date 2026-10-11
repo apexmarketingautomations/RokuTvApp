@@ -11,8 +11,8 @@
   <children>
     <Rectangle id="border" width="308" height="226" color="0x36CFEA99" />
     <Rectangle translation="[3,3]" width="302" height="220" color="0x090F21FF" />
-    <Poster translation="[4,4]" width="300" height="164" uri="pkg:/images/logo.png" loadDisplayMode="scaleToFit" />
-    <Poster id="art" translation="[4,4]" width="300" height="164" loadDisplayMode="scaleToFit" />
-    <Label id="title" translation="[12,174]" width="284" height="44" color="0xEFF9FFFF" font="font:SmallSystemFont" />
+    <Poster translation="[4,4]" width="300" height="164" loadWidth="300" loadHeight="164" loadDisplayMode="scaleToFit" uri="pkg:/images/logo.png" />
+    <Poster id="art" translation="[4,4]" width="300" height="164" loadWidth="300" loadHeight="164" loadDisplayMode="scaleToFit" />
+    <Label id="title" translation="[12,174]" width="284" height="44" wrap="true" maxLines="2" color="0xEFF9FFFF" font="font:SmallSystemFont" />
   </children>
 </component>
