@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-11",
+  "device_model": "H530X",
+  "roku_os": "15.3.4 build 2303",
+  "installed_app_version": "1.0.6",
+  "package_sha256": "f4dcff305feaf7c0bb7d3f039a51d1ed1f2b24ee95057330cd6c0e9a0231daf9",
+  "source_input_before": "tvinput.hdmi1",
+  "source_input_after": "tvinput.hdmi1",
+  "source_restored_verified": true,
+  "account_and_catalog": {
+    "saved_account_reopened_without_login": true,
+    "movie_results": 19594,
+    "live_results": 5638,
+    "continue_watching_entries_observed": 2,
+    "favorite_channels_observed": 1,
+    "saved_account_and_continue_watching_restored_after_app_exit_relaunch": true
+  },
+  "episode": {
+    "title": "Man vs Baby (2025) S01 E01",
+    "native_format": "H264/AAC HLS",
+    "position_ms_samples": [228214, 251094],
+    "error_observed": false,
+    "pause_observed": true,
+    "picture_and_sound": "User confirmed both in an earlier device session; this run collected native telemetry only"
+  },
+  "live": {
+    "title": "A&E (East) US",
+    "native_format": "H264/AAC HLS",
+    "playing_position_ms_sample": 50049,
+    "channel_switch_restarted_playback_without_observed_error": true,
+    "picture_and_sound": "User confirmed both in an earlier device session; this run collected native telemetry only"
+  },
+  "guide": {
+    "listing_status": "unavailable",
+    "fallback_dialog_offered_watch_channel": true,
+    "retry_observation": "Developer screenshots were black while the app remained active; Back restored the guide screen. Whether the black screen was visible on the TV was not independently confirmed.",
+    "listing_pass": false
+  },
+  "movies": [
+    {"title": "Wake Up Dead Man", "result": "failed during startup", "native_error_code": -3},
+    {"title": "Jackass: Best and Last (2026)", "result": "failed during startup", "native_error_code": -3},
+    {"title": "Jackass 4.5", "result": "failed during startup", "native_error_code": -3}
+  ],
+  "movie_picture_and_sound_pass": false,
+  "full_e2e_pass": false,
+  "not_tested_this_session": ["full TV power cycle", "movie sustained playback", "movie picture and sound", "long-duration resource soak"],
+  "evidence_note": "Raw screenshots, logs, account state and provider URLs remain in ignored evidence/private; this file contains sanitized observations only. Roku developer screenshots do not capture the video plane."
+}
