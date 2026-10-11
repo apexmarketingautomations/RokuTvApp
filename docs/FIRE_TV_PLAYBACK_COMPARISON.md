@@ -21,4 +21,6 @@ On Roku build 1.0.6, **I Swear** repeatedly stops near 175 seconds with native `
 
 Representative movie playback through a sustained interval with visible picture and audible sound remains the acceptance gap. Do not count the Fire TV source audit, a successful manifest/segment request, or the Roku's short playback clock advance as a movie E2E pass.
 
-The strongest named comparison for a future physical run is **Jackass: Best and Last (2026)**, because Fire TV's September audit observed playback beyond its prior 42-minute failure after rendition recovery. Its present provider availability and Roku behavior still need a fresh test. The Roku TV was showing its PlayStation HDMI input during this read-only review, so no new TV playback result was recorded.
+The strongest named comparison was **Jackass: Best and Last (2026)**, because Fire TV's September audit observed playback beyond its prior 42-minute failure after rendition recovery. The Roku TV was showing its PlayStation HDMI input during the initial read-only review, so that review recorded no new TV playback result.
+
+Later the same day, a fresh Roku test found the title in the 19,594-result movie catalog but its native HLS startup failed with `-3`. **Jackass 4.5** and **Wake Up Dead Man** also failed during startup. The historical Fire TV result is therefore not a present-day Roku movie pass; these native errors do not by themselves distinguish provider unavailability from Roku-specific media handling. See the [follow-up device record](../evidence/2026-10-11-device-e2e-followup.json).
