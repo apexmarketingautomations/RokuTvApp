@@ -1,0 +1,8 @@
+{
+  "model": "H530X",
+  "evidence_type": "reported_device_capabilities",
+  "os_version": "15.3.4",
+  "os_build": "2303",
+  "ui_resolution": "720p",
+  "developer_enabled": true
+}

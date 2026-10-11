@@ -1,0 +1,82 @@
+{
+  "evidence_type": "sanitized_real_roku_build_verification",
+  "date": "2026-10-11",
+  "build": "1.0.00006",
+  "deviceModel": "H530X",
+  "activeAppVersion": "1.0.6",
+  "package": {
+    "path": "dist/apex-after-dark-roku.zip",
+    "bytes": 5608930,
+    "runtimeFiles": 15,
+    "sha256": "f4dcff305feaf7c0bb7d3f039a51d1ed1f2b24ee95057330cd6c0e9a0231daf9",
+    "installedWithDeveloperInstaller": true
+  },
+  "localVerification": {
+    "core": "passed",
+    "navigationAssertions": 9,
+    "sceneAssertions": 52,
+    "pythonTests": 31,
+    "brighterscript": "passed",
+    "build": "passed",
+    "diffCheck": "passed"
+  },
+  "native": {
+    "savedAccountRestoredWithoutLogin": true,
+    "homeMovieResults": 19594,
+    "continueWatchingVisibleOnBuild5Screenshot": true,
+    "build6EpisodeDetailsFallbackOpened": true,
+    "build6EpisodeResumeOptionVisible": true,
+    "build6EpisodeMedia": {
+      "title": "Man vs Baby (2025) S01 E01",
+      "nativeState": "play",
+      "fromSeconds": 200.381,
+      "toSeconds": 223.781,
+      "error": false,
+      "container": "hls",
+      "codecVideo": "h264",
+      "codecAudio": "aac"
+    },
+    "build6LiveMedia": {
+      "title": "A&E (East) US",
+      "nativeState": "play",
+      "fromSeconds": 24.623,
+      "toSeconds": 50.699,
+      "error": false,
+      "isLive": true,
+      "container": "hls",
+      "codecVideo": "h264",
+      "codecAudio": "aac"
+    },
+    "build6Movies": {
+      "Wake Up Dead Man": {
+        "result": "stopped during startup",
+        "errorCode": -3
+      },
+      "Bugonia": {
+        "result": "stopped during startup",
+        "errorCode": -3
+      }
+    },
+    "build5Movie": {
+      "title": "I Swear (2025)",
+      "result": "stopped near 175 seconds",
+      "errorCode": -5,
+      "internalCode": 9,
+      "drmCode": 0,
+      "sampledDownloadedAudioVideoSegmentsStatus": 0
+    },
+    "guide": {
+      "liveFallbackWorked": true,
+      "defaultHost": "tvnow.best",
+      "computerDnsError": "gaierror errno 8"
+    },
+    "finalScreen": "Home"
+  },
+  "limitations": [
+    "Native player telemetry does not prove moving pictures or audible sound.",
+    "Movie playback failed for three sampled titles; root cause is unresolved.",
+    "Full TV power-cycle persistence, reachable guide listings, broad artwork coverage and resource endurance remain unverified."
+  ],
+  "credentialsInEvidence": false,
+  "streamUrlsInEvidence": false
+}

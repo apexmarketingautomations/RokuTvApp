@@ -1,0 +1,195 @@
+{
+  "evidence_type": "installation_result_with_local_package_verification",
+  "date": "2026-10-10",
+  "build": "1.0.00003",
+  "deviceModel": "H530X",
+  "installation": {
+    "success": true,
+    "method": "Roku developer installer with Digest authentication",
+    "source": "successful real-device installer result reported by the parent task"
+  },
+  "package": {
+    "path": "dist/apex-after-dark-roku.zip",
+    "bytes": 5608191,
+    "runtimeFiles": 15,
+    "sha256": "8f5bbe3cdfc2b62a1240b5ea1a3af252208f8338722e8565b7bf12d2de4a8413",
+    "localArchiveAndSidecarVerified": true
+  },
+  "automatedVerification": {
+    "test": "passed: core suite, 9 navigation assertions, 28 scene assertions, 29 Python tests",
+    "check": "passed",
+    "build": "passed",
+    "diffCheck": "passed",
+    "source": "fresh final checks reported by parent task"
+  },
+  "newBuildLaunched": true,
+  "newBuildLaunchVerified": true,
+  "newBuildSavedLoginRestoredAtLaunch": true,
+  "newBuildRepeatedExitPersistenceVerified": false,
+  "physicalPlaybackVerified": false,
+  "newBuildRuntimeChecksComplete": false,
+  "preliminaryRuntimeObservation": {
+    "source": "parent task observed Home, inspected build3-install-launch.json and build3-catalog-state.json, and captured private screenshot",
+    "activeAppVersion": "1.0.3",
+    "screenAtLaunch": "Home",
+    "loadingText": "Loading your library",
+    "savedAccountMessageShown": true,
+    "loginPromptShown": false,
+    "catalog": "loaded",
+    "verificationComplete": false,
+    "catalogMatches": 19592,
+    "nativeStartupBuild": "1.0.00003",
+    "catalogResponseItems": 30,
+    "catalogHasMore": true
+  },
+  "historicalEvidence": [
+    "2026-10-10-build2-installed.json",
+    "2026-10-10-account-setup.json",
+    "2026-10-10-account-reconnect.json"
+  ],
+  "providerDiagnostics": "2026-10-10-provider-diagnostics.json",
+  "currentTvContext": "Build 3 relaunched to Home with saved account and no login prompt; build 4 preparation continues",
+  "credentialsInEvidence": false,
+  "limitation": "Native catalogs, example artwork, advancing movie/episode/live media state and movie controls are observed. One exit/relaunch restored the account without a login prompt. Physical pictures/sound, remaining image failures, repeated-cycle persistence and full TV reboot remain unverified. Build 4 is not installed.",
+  "nativeArtworkObserved": true,
+  "allArtworkVerified": false,
+  "newBuildCatalogLoaded": true,
+  "artworkVerification": {
+    "status": "partial",
+    "visibleExamples": [
+      "Wake Up Dead Man",
+      "Bugonia",
+      "Sinners"
+    ],
+    "featureArtLoadStatus": 3,
+    "cardLoadStatusesObserved": [
+      3,
+      2
+    ],
+    "limitation": "Some native artwork loads succeeded and some failed; does not establish universal image availability. Computer-side HTTP 403 did not establish that Roku could not fetch all images."
+  },
+  "nativePlaybackTelemetryVerified": true,
+  "nativePlaybackObservations": {
+    "source": "parent inspected build3-movie-playback.json, build3-movie-controls.json, sanitized media state snapshots and episode telemetry",
+    "movie": {
+      "title": "I Swear",
+      "search": "Options search returned the title",
+      "format": "HLS",
+      "videoCodec": "H264",
+      "audioCodec": "AAC",
+      "advancingPositionSeconds": [
+        12.055,
+        60.055,
+        70.555
+      ],
+      "errorObserved": false,
+      "controls": {
+        "pausePositionSeconds": 89.055,
+        "resumeObserved": true,
+        "seekApproximateFromSeconds": 94,
+        "seekApproximateToSeconds": 140,
+        "playingAfterSeekPositionSeconds": 144.061,
+        "backReturnedToApp": true
+      }
+    },
+    "episode": {
+      "title": "Man vs Baby",
+      "season": 1,
+      "episode": 1,
+      "format": "HLS",
+      "videoCodec": "H264",
+      "audioCodec": "AAC",
+      "state": "playing",
+      "positionSeconds": 10.134,
+      "durationSeconds": 1660.181,
+      "errorObserved": false,
+      "observationOngoing": false,
+      "advancingPositionSeconds": [
+        10.134,
+        31.454
+      ],
+      "source": "build3-episode-media-later.json and first episode telemetry"
+    },
+    "physicalPictureAndSoundConfirmed": false,
+    "limitation": "Native media state and advancing positions support playback startup and controls; they do not establish changing pictures or audible sound. User confirmation is pending.",
+    "live": {
+      "title": "A&E (East) US",
+      "format": "HLS",
+      "videoCodec": "H264",
+      "audioCodec": "AAC",
+      "isLive": true,
+      "advancingPositionSeconds": [
+        36.653,
+        44.694
+      ],
+      "errorObserved": false,
+      "source": [
+        "build3-live-media-first.json",
+        "build3-live-media-later.json",
+        "build3-live-playback.json"
+      ]
+    }
+  },
+  "tvCatalogObservation": {
+    "providerPagesLoaded": 1,
+    "seriesCount": 502,
+    "visibleArtworkExamples": [
+      "Land of Sin",
+      "Man vs Baby"
+    ],
+    "episodeSelection": "Man vs Baby, Season 1, Episode 1"
+  },
+  "liveCatalogObservation": {
+    "channelCount": 5766,
+    "selectedChannel": "A&E (East) US"
+  },
+  "nativeExitRelaunchVerified": true,
+  "savedAccountRelaunchObservation": {
+    "completedCycles": 1,
+    "exit": "Back then Home exited the app",
+    "firstLaunchAttempt": "HTTP 503 while Roku was still unloading",
+    "retry": "one retry after Roku menu became active succeeded",
+    "activeAppVersion": "1.0.3",
+    "screen": "Home",
+    "savedAccountMessageShown": true,
+    "loginPromptShown": false,
+    "source": "build3-relaunch-state.json",
+    "repeatedCyclesVerified": false,
+    "fullTvRebootVerified": false
+  },
+  "resourceSamples": {
+    "observations": {
+      "movie": {
+        "source": "build3-movie-perf.json",
+        "cpuPercent": {
+          "user": 1.5,
+          "sys": 0.8
+        },
+        "memoryBytes": {
+          "used": 119406592,
+          "res": 119406592,
+          "anon": 39849984,
+          "swap": 0,
+          "file": 79355904,
+          "shared": 200704
+        }
+      },
+      "browse": {
+        "source": "build3-browse-perf.json",
+        "cpuPercent": {
+          "user": 0,
+          "sys": 0
+        },
+        "memoryBytes": {
+          "used": 54775808,
+          "res": 54775808,
+          "anon": 34906112,
+          "swap": 0,
+          "file": 19537920,
+          "shared": 331776
+        }
+      }
+    },
+    "limitation": "Isolated snapshots of different workloads, not a stress test, leak investigation, peak usage measurement or controlled parser comparison."
+  }
+}

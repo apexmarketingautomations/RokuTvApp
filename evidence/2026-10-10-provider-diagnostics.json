@@ -1,0 +1,509 @@
+{
+  "movieCatalog": {
+    "code": 200,
+    "type": "audio/mpegurl",
+    "bytes": 3564379,
+    "host": "tvnow.best",
+    "elapsedMs": 1523,
+    "count": 19592,
+    "firstTitles": [
+      {
+        "title": "On the Road (2025)",
+        "imdbId": "tt37660509",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Sacrifice (2025)",
+        "imdbId": "tt32268992",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Animals (2026)",
+        "imdbId": "tt31049299",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "California Schemin' (2025)",
+        "imdbId": "tt29549490",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Matchbox the Movie (2026)",
+        "imdbId": "tt28498219",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Once Upon a Time in the Middle East (2026)",
+        "imdbId": "tt34386754",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Doing Life (2026)",
+        "imdbId": "tt36429458",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Infirmary (2026)",
+        "imdbId": "tt35682658",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Nickels (2026)",
+        "imdbId": "tt32507786",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "The Widower: 'Til Death Do Us Part (2026)",
+        "imdbId": "tt44568097",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Sam Morril: Incorrect (2026)",
+        "imdbId": "tt45584335",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "The Nice Ones (2026)",
+        "imdbId": "tt36975519",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Unabomber (2026)",
+        "imdbId": "tt6933238",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Go Deep: The DeSean Jackson Story (2026)",
+        "imdbId": "tt30260723",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Neil Peart: No One's Disciple (2026)",
+        "imdbId": "tt44085358",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "The Love Hypothesis (2026)",
+        "imdbId": "tt22526100",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "One Last Shot (2026)",
+        "imdbId": "tt37971717",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Siren: The Voices of Shelley Beattie (2025)",
+        "imdbId": "tt38516475",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Above and Below (2026)",
+        "imdbId": "tt37603783",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Resident Evil (2026)",
+        "imdbId": "tt35538033",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "You+Me - Against the World (2026)",
+        "imdbId": "tt43617372",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": " 1... Frankie Go Boom (2012)",
+        "imdbId": "tt1772271",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Inside (2024)",
+        "imdbId": "tt29424168",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Sultana (2026)",
+        "imdbId": "tt41228546",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Run Hide Fight: Infidels (2026)",
+        "imdbId": "tt40231163",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "After Impact (2026)",
+        "imdbId": "tt36809539",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Gator Face (2026)",
+        "imdbId": "tt38630008",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Jo Koy: Blue in the Face (2026)",
+        "imdbId": "tt39052963",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "Lion Fist (2026)",
+        "imdbId": "tt38953026",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      },
+      {
+        "title": "The Last Kiss (2026)",
+        "imdbId": "tt33253206",
+        "hasPlaylistArt": false,
+        "artScheme": ""
+      }
+    ]
+  },
+  "episodeCatalog": {
+    "code": 200,
+    "type": "audio/mpegurl",
+    "bytes": 1055830,
+    "host": "tvnow.best",
+    "elapsedMs": 469,
+    "count": 5000,
+    "firstTitles": [
+      {
+        "title": "A Killer Story (2026) S01 E01",
+        "imdbId": "tt9280400",
+        "hasPlaylistArt": false
+      },
+      {
+        "title": "A Killer Story (2026) S01 E02",
+        "imdbId": "tt9280400",
+        "hasPlaylistArt": false
+      },
+      {
+        "title": "A Killer Story (2026) S01 E03",
+        "imdbId": "tt9280400",
+        "hasPlaylistArt": false
+      },
+      {
+        "title": "Run Away (2026) S01 E01",
+        "imdbId": "tt9169516",
+        "hasPlaylistArt": false
+      }
+    ]
+  },
+  "metadataLogin": {
+    "code": 200,
+    "type": "application/json",
+    "bytes": 1527,
+    "host": "dev.testbyte.top",
+    "elapsedMs": 683,
+    "dataType": "dict",
+    "tokenPresent": true,
+    "expiresType": "str"
+  },
+  "metadataProfiles": {
+    "code": 200,
+    "type": "application/json",
+    "bytes": 2505,
+    "host": "dev.testbyte.top",
+    "elapsedMs": 218,
+    "dataType": "list",
+    "count": 4,
+    "profileIdType": "int",
+    "profileIdIsInteger": true
+  },
+  "movieMetadata": {
+    "code": 200,
+    "type": "application/json",
+    "bytes": 2881,
+    "host": "dev.testbyte.top",
+    "elapsedMs": 224,
+    "recordCount": 2,
+    "records": [
+      {
+        "imdbId": "tt1772271",
+        "title": "3, 2, 1... Frankie Go Boom",
+        "fields": [
+          "imdb_id",
+          "is_active",
+          "tvdb_id",
+          "tmdb_id",
+          "trakt_id",
+          "type",
+          "title",
+          "year",
+          "released",
+          "mpa",
+          "history",
+          "is_favorite",
+          "meta",
+          "meta_episodes",
+          "rating",
+          "languages",
+          "allowed_by_trial",
+          "trailers"
+        ],
+        "metaFields": [
+          "imdb_id",
+          "title",
+          "year",
+          "votes",
+          "rank",
+          "plot",
+          "poster",
+          "type",
+          "runtime",
+          "genres",
+          "trakt_id",
+          "released",
+          "company",
+          "director",
+          "writer",
+          "cast",
+          "fanart",
+          "tmdb_id",
+          "trailer",
+          "banner",
+          "screenshot"
+        ],
+        "art": {
+          "fanart": {
+            "type": "str",
+            "scheme": "https",
+            "host": "storage.testbyte.top",
+            "present": true
+          },
+          "poster": {
+            "type": "str",
+            "scheme": "https",
+            "host": "storage.testbyte.top",
+            "present": true
+          },
+          "banner": {
+            "type": "NoneType",
+            "scheme": null,
+            "host": null,
+            "present": false
+          },
+          "screenshot": {
+            "type": "NoneType",
+            "scheme": null,
+            "host": null,
+            "present": false
+          }
+        }
+      },
+      {
+        "imdbId": "tt0111161",
+        "title": "The Shawshank Redemption",
+        "fields": [
+          "imdb_id",
+          "is_active",
+          "tvdb_id",
+          "tmdb_id",
+          "trakt_id",
+          "type",
+          "title",
+          "year",
+          "released",
+          "mpa",
+          "history",
+          "is_favorite",
+          "meta",
+          "meta_episodes",
+          "rating",
+          "languages",
+          "allowed_by_trial",
+          "trailers"
+        ],
+        "metaFields": [
+          "imdb_id",
+          "title",
+          "year",
+          "votes",
+          "rank",
+          "plot",
+          "poster",
+          "type",
+          "runtime",
+          "genres",
+          "released",
+          "company",
+          "director",
+          "writer",
+          "cast",
+          "mppa",
+          "fanart",
+          "trailer",
+          "banner",
+          "screenshot"
+        ],
+        "art": {
+          "fanart": {
+            "type": "str",
+            "scheme": "https",
+            "host": "storage.testbyte.top",
+            "present": true
+          },
+          "poster": {
+            "type": "str",
+            "scheme": "https",
+            "host": "storage.testbyte.top",
+            "present": true
+          },
+          "banner": {
+            "type": "NoneType",
+            "scheme": null,
+            "host": null,
+            "present": false
+          },
+          "screenshot": {
+            "type": "NoneType",
+            "scheme": null,
+            "host": null,
+            "present": false
+          }
+        }
+      }
+    ]
+  },
+  "sampleArtwork": {
+    "code": 403,
+    "type": "text/plain; charset=UTF-8",
+    "error": "HTTPError",
+    "signature": ""
+  },
+  "streams": [
+    {
+      "title": "On the Road (2025)",
+      "kind": "movie",
+      "extension": "",
+      "head": {
+        "code": 200,
+        "type": "application/vnd.apple.mpegurl",
+        "bytes": 0,
+        "host": "185-93-0-194.allanimals.cyou",
+        "elapsedMs": 583
+      },
+      "get": {
+        "code": 0,
+        "error": "RemoteDisconnected",
+        "elapsedMs": 424
+      },
+      "hls": false,
+      "mp4": false,
+      "mkv": false
+    },
+    {
+      "title": "Sacrifice (2025)",
+      "kind": "movie",
+      "extension": "",
+      "head": {
+        "code": 200,
+        "type": "application/vnd.apple.mpegurl",
+        "bytes": 0,
+        "host": "185-93-0-194.allanimals.cyou",
+        "elapsedMs": 1203
+      },
+      "get": {
+        "code": 0,
+        "error": "RemoteDisconnected",
+        "elapsedMs": 686
+      },
+      "hls": false,
+      "mp4": false,
+      "mkv": false
+    },
+    {
+      "title": "I Swear (2025)",
+      "kind": "movie",
+      "extension": "",
+      "head": {
+        "code": 200,
+        "type": "application/vnd.apple.mpegurl",
+        "bytes": 0,
+        "host": "185-93-0-194.allanimals.cyou",
+        "elapsedMs": 543
+      },
+      "get": {
+        "code": 206,
+        "type": "application/vnd.apple.mpegurl",
+        "bytes": 1162,
+        "host": "185-93-0-194.allanimals.cyou",
+        "elapsedMs": 414
+      },
+      "hls": true,
+      "mp4": false,
+      "mkv": false
+    },
+    {
+      "title": "A Killer Story (2026) S01 E01",
+      "kind": "episode",
+      "extension": "",
+      "head": {
+        "code": 200,
+        "type": "application/vnd.apple.mpegurl",
+        "bytes": 0,
+        "host": "185-93-0-194.allanimals.cyou",
+        "elapsedMs": 824
+      },
+      "get": {
+        "code": 0,
+        "error": "RemoteDisconnected",
+        "elapsedMs": 450
+      },
+      "hls": false,
+      "mp4": false,
+      "mkv": false
+    },
+    {
+      "title": "A Killer Story (2026) S01 E02",
+      "kind": "episode",
+      "extension": "",
+      "head": {
+        "code": 200,
+        "type": "application/vnd.apple.mpegurl",
+        "bytes": 0,
+        "host": "185-93-0-194.allanimals.cyou",
+        "elapsedMs": 656
+      },
+      "get": {
+        "code": 0,
+        "error": "RemoteDisconnected",
+        "elapsedMs": 439
+      },
+      "hls": false,
+      "mp4": false,
+      "mkv": false
+    }
+  ],
+  "complete": true
+}

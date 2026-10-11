@@ -1,0 +1,104 @@
+{
+  "evidence_type": "installation_result_with_local_package_verification",
+  "date": "2026-10-10",
+  "build": "1.0.00004",
+  "deviceModel": "H530X",
+  "installation": {
+    "success": true,
+    "method": "Roku developer installer with Digest authentication",
+    "source": "successful real-device installer result reported by parent task"
+  },
+  "package": {
+    "path": "dist/apex-after-dark-roku.zip",
+    "bytes": 5608551,
+    "runtimeFiles": 15,
+    "sha256": "c40a4b353a69749842ab396a816cd5725098ae4ab7f59bc520874adb2c70f547",
+    "localArchiveAndSidecarVerified": true
+  },
+  "automatedVerification": {
+    "test": "passed: core suite, 9 navigation assertions, 44 scene assertions, 31 Python tests",
+    "check": "passed",
+    "build": "passed",
+    "diffCheck": "passed",
+    "source": "fresh final checks reported by parent task"
+  },
+  "changes": [
+    "Newest-first actual movie-year categories with unchanged filter values",
+    "Safe same-ID artwork fallback in resolve/history while current catalog URLs and headers remain authoritative",
+    "Selection blocked during catalog loading",
+    "Stale rows and selected content cleared when switching sections or returning from a child to the section root",
+    "Child lists start at first item; parent query/page/category/focus retained for return",
+    "Compact status and provider-page scope, readable playback hint and build label"
+  ],
+  "nativeVerificationStatus": "in progress; final build 4 movie test failed after initially advancing; diagnosis ongoing",
+  "newBuildRuntimeChecksComplete": false,
+  "physicalPlaybackVerified": false,
+  "credentialsInEvidence": false,
+  "historicalEvidence": [
+    "2026-10-10-build3-installed.json",
+    "2026-10-10-build2-installed.json",
+    "2026-10-10-account-setup.json",
+    "2026-10-10-account-reconnect.json"
+  ],
+  "limitation": "Build 4 startup, saved-account launch, Home catalog, partial artwork, categories and search are observed. I Swear resumed and initially advanced but then stopped at 174.138 seconds with mediaerror -5/internal9/drm0. Sustained playback is unresolved; cause is not established. History and explicit exit/relaunch remain incomplete. Build 3 playback/control/relaunch results are historical. Direct pictures/sound remain unconfirmed.",
+  "newBuildLaunchVerified": true,
+  "newBuildSavedLoginRestoredAtLaunch": true,
+  "newBuildCatalogLoaded": true,
+  "preliminaryRuntimeObservation": {
+    "source": "parent inspected build4-launch and active app/screen state",
+    "nativeStartupBuild": "1.0.00004",
+    "activeAppVersion": "1.0.4",
+    "screenAtLaunch": "Home",
+    "loginPromptShown": false,
+    "catalogMatches": 19592,
+    "compactStatusVisible": true
+  },
+  "artworkVerification": {
+    "status": "partial",
+    "source": "build4-movies-ready.json",
+    "readyNodes": 11,
+    "failedNodes": 7,
+    "countsIncludeRetainedNodes": true,
+    "limitation": "Some movie artwork loaded and some failed; retained SceneGraph nodes are included, so counts are not a visible-card coverage percentage."
+  },
+  "categoryAndSearchObservation": {
+    "sources": [
+      "build4-movie-categories.jpg",
+      "build4-year-filter.json",
+      "build4-movie-search.json"
+    ],
+    "allFirst": true,
+    "firstMovieYears": [
+      2026,
+      2025,
+      2024,
+      2023,
+      2022
+    ],
+    "selectedYear": 2025,
+    "filteredResults": 903,
+    "searchQuery": "I Swear",
+    "searchResults": 1
+  },
+  "nativeMoviePlayback": {
+    "title": "I Swear",
+    "resumeApproximateSeconds": 144,
+    "playingSnapshotSeconds": 159.763,
+    "advancedThroughApproximateSeconds": 169,
+    "stoppedPositionSeconds": 174.138,
+    "finalState": "stopped",
+    "error": true,
+    "errorCategory": "mediaerror",
+    "errorCode": -5,
+    "internalErrorCode": 9,
+    "drmErrorCode": 0,
+    "sources": [
+      "build4-movie.json",
+      "build4-movie-media.json",
+      "build4-movie-media-later.json"
+    ],
+    "result": "failed after initial playback; sustained playback is not reliable",
+    "diagnosis": "in progress; cause not established"
+  },
+  "currentTvContext": "Final build 4 movie stopped with native error; playback diagnosis ongoing"
+}
