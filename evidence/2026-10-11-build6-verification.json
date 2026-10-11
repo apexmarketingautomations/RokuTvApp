@@ -78,12 +78,14 @@
         "Man vs Baby (2025) S01 E01",
         "A&E (East) US"
       ]
-    }
+    },
+    "userReportedMovieFailuresInAnotherApp": true
   },
   "limitations": [
     "Native telemetry alone cannot prove moving pictures or sound; the viewer confirmed both for the sampled episode and live channel, but movie playback failed.",
     "Movie playback failed for three sampled titles; root cause is unresolved.",
-    "Full TV power-cycle persistence, reachable guide listings, broad artwork coverage and resource endurance remain unverified."
+    "Full TV power-cycle persistence, reachable guide listings, broad artwork coverage and resource endurance remain unverified.",
+    "Cross-device movie failure was reported by the user for sampled Apollo titles; exact title overlap and root cause are unconfirmed."
   ],
   "credentialsInEvidence": false,
   "streamUrlsInEvidence": false
